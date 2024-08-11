@@ -1,0 +1,17 @@
+name: Sync Issues to Private Repo
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  sync_issue:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create issue in private repo
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+        -d "{\"title\": \"${{ github.event.issue.title }}\", \"body\": \"${{ github.event.issue.body }}\n\nOriginal issue: ${{ github.event.issue.html_url }}\"}" \
+        https://api.github.com/repos/peteriadamgabor/faypy/issues
